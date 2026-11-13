@@ -1,0 +1,29 @@
+name: Build APK
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tvlite
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build release APK
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TVLite-apk
+          path: tvlite/app/build/outputs/apk/release/*.apk
